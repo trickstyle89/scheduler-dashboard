@@ -64,7 +64,14 @@ class Dashboard extends Component {
       interviewers: interviewers.data
     });
   });
+
+  this.socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+
 };
+
+componentWillUnmount = () => {
+  this.socket.close();
+}
 
   componentDidUpdate = (previousProps, previousState) => {
     if (previousState.focused !== this.state.focused) {
@@ -73,13 +80,13 @@ class Dashboard extends Component {
   }
 
   selectPanel = (id) => {
-    this.setState({
-      focused: id
-    });
+    this.setState((prevState) => ({
+      focused: prevState.focused === id ? null : id,
+    }));
   }
 
   render() {
-    
+
       const dashboardClasses = classnames("dashboard", {
         "dashboard--focused": this.state.focused
       });
